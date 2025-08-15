@@ -1,0 +1,16 @@
+# Node/Electron
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build / Cache
+.cache/
+.parcel-cache/
+release/
+release-builds/
+build/
+
+# Sistema
+.DS_Store
+Thumbs.db
