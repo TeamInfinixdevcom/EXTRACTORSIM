@@ -158,3 +158,13 @@ canvas { width: 100%; max-width: 700px; height: auto; background: #fff; border-r
     .card.paper { background: #fff; border: 1px solid #e5e7eb; }
     input, textarea, select { border: 0 !important; }
 }
+
+#neonClock {
+    color: #cc0c0c;
+    text-shadow:
+        0 0 8px #0c59cc,
+        0 0 16px #0c59cc,
+        0 0 32px #fff;
+    font-weight: bold;
+    font-size: 1.3em;
+}

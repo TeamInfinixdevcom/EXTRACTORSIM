@@ -1,394 +1,360 @@
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-    <meta charset="utf-8" />
-    <title>SIMs Infinix — Neon</title>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data:;">
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <!-- FIX: ruta correcta del CSS -->
-    <link rel="stylesheet" href="../renderer/styles.css">
-    <link rel="stylesheet" href="../renderer/neon.css">
-    <link rel="icon" href="../renderer/favicon.ico" type="image/x-icon">    
-    </head>
-    <body>
-    <main class="shell">
-    <!-- TOP BAR -->
-    <header class="topbar">
-        <div class="brand">
-        <div class="brand-glow"></div>
-        <span class="brand-name">SIMs Infinix</span>
-        </div>
-        <nav class="tabs">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<title>Entrega de SIMs Físicas Kolbi</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data:;">
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" href="../renderer/styles.css">
+<link rel="stylesheet" href="../renderer/neon.css">
+<link rel="icon" href="./kolbi.png" type="image/png">
+
+<main class="shell">
+<header class="topbar" style="background:#43b02a;">
+    <div class="brand">
+        <img src="./kolbi.png" alt="Kolbi" style="height:48px;vertical-align:middle;margin-right:12px;">
+        <span class="brand-name" style="font-size:2rem;">Entrega de SIMs Físicas Kolbi</span>
+    </div>
+    <nav class="tabs">
         <button class="tab active" data-target="#tab-form"><span class="tab-dot"></span> Formulario</button>
         <button class="tab" data-target="#tab-inventario"><span class="tab-dot"></span> Inventario</button>
         <button class="tab" data-target="#tab-outlook"><span class="tab-dot"></span> Estado Outlook</button>
         <button class="tab" data-target="#tab-credits"><span class="tab-dot"></span> Créditos</button>
-        </nav>
-        <div class="row" style="gap:8px">
+    </nav>
+    <div class="row" style="gap:8px">
         <div id="neonClock" class="muted" aria-live="polite">--:--</div>
         <input id="miniDate" type="date" />
-        </div>
-    </header>
+    </div>
+</header>
 
-    <!-- ============ TAB: FORMULARIO (zona SIMs solo supervisor) ============ -->
-    <section id="tab-form" class="tabpanel active">
-        <!-- Supervisor / Login básico -->
-        <section class="card glass">
-        <h2 class="card-title">Supervisor</h2>
-        <div class="grid grid-3">
-            <label class="full">Supervisor activo
-            <div class="row" style="gap:8px;">
-                <input id="supCorreo" placeholder="correo@ice.go.cr" />
-                <input id="supClave" type="password" placeholder="Clave" />
-                <button id="btnLogin" type="button" class="btn btn-neon">Iniciar sesión Microsoft</button>
-                <button id="btnLogoff" type="button" class="btn btn-ghost">Salir</button>
-            </div>
-            <small id="supEstado" class="muted">No autenticado</small>
-            </label>
+<section id="tab-form" class="tabpanel active">
+    <section class="card glass">
+    <h2 class="card-title">Supervisor</h2>
+    <div class="grid grid-3">
+        <label class="full">Supervisor activo
+        <div class="row" style="gap:8px;">
+            <input id="supCorreo" placeholder="correo@ice.go.cr" />
+            <input id="supClave" type="password" placeholder="Clave" />
+            <button id="btnLogin" type="button" class="btn btn-neon">Iniciar sesión</button>
+            <button id="btnLogoff" type="button" class="btn btn-ghost">Salir</button>
         </div>
-        <div id="guardNote" class="muted" style="margin-top:8px">
-            * Solo el supervisor autenticado puede generar y enviar SIMs.
-        </div>
-        </section>
-
-        <!-- Agente destino -->
-        <section class="card glass" data-guard="sims">
-        <h2 class="card-title">Agente destino</h2>
-        <div class="grid">
-            <label class="full">Seleccionar agente (libreta)
-            <select id="selAgente"></select>
-            </label>
-            <label>Agente
-            <input id="agente" placeholder="Nombre del agente" />
-            </label>
-            <label>Usuario
-            <input id="usuario" placeholder="Usuario/cliente (ej. rumadr)" />
-            </label>
-            <label class="full">Correo del agente
-            <input id="correo" placeholder="correo@empresa.com" />
-            </label>
-        </div>
-        <div class="subtle-title">Agregar / actualizar en libreta</div>
-        <div class="grid grid-3">
-            <input id="newNombre" placeholder="Nombre completo" />
-            <input id="newUsuario" placeholder="Usuario (ej. emondragon)" />
-            <input id="newCorreo"  placeholder="correo@ice.go.cr" />
-        </div>
-        <div class="row gap">
-            <button id="btnAddAgente" class="btn btn-outline">Guardar agente</button>
-            <button id="btnDelAgente" class="btn btn-outline danger">Eliminar por correo</button>
-        </div>
-        </section>
-
-        <!-- Contenido + Firma -->
-        <section class="card glass" data-guard="sims">
-        <h2 class="card-title">Detalle de SIMs</h2>
-        <div class="grid">
-            <label class="full">Contenido de la SIM (pegar aquí)
-            <textarea id="contenido" rows="10" placeholder="Pegue el texto completo de la SIM…"></textarea>
-            </label>
-        </div>
-        <div class="subtle-title">Firma del supervisor</div>
-        <div class="sign-box">
-            <canvas id="canvasFirma" width="700" height="220"></canvas>
-            <small class="muted">Firme dentro del recuadro</small>
-        </div>
-        <div class="row gap actions">
-            <button id="btnGenerar" class="btn btn-neon big">Generar PDF y Enviar</button>
-        </div>
-        </section>
-
-        <!-- Vista previa -->
-        <section class="card paper" data-guard="sims">
-        <h2 class="card-title">Vista previa (PDF)</h2>
-        <div id="preview" class="preview">
-            <div class="preview-head">
-            <div><strong>Agente:</strong> <span id="pvAgente">—</span></div>
-            <div><strong>Usuario:</strong> <span id="pvUsuario">—</span></div>
-            <div><strong>Correo:</strong> <span id="pvCorreo">—</span></div>
-            <div><strong>Fecha:</strong> <span id="pvFecha">—</span></div>
-            </div>
-            <hr>
-            <pre id="pvContenido"></pre>
-            <div class="preview-sign">
-            <img id="imgFirma" alt="firma del supervisor" />
-            <div class="sign-line">______________________________</div>
-            <div class="sign-label">Firma del supervisor</div>
-            </div>
-        </div>
-        </section>
+        <small id="supEstado" class="muted">No autenticado</small>
+        </label>
+    </div>
+    <div id="guardNote" class="muted" style="margin-top:8px">
+        * Solo el supervisor autenticado puede generar y enviar SIMs.
+    </div>
     </section>
 
-    <!-- ============ TAB: INVENTARIO ============ -->
-    <section id="tab-inventario" class="tabpanel">
-        <section class="card glass">
-        <h2 class="card-title">Inventario de Terminales</h2>
-        <div style="margin-bottom:10px">
-            <label class="full">Cargar terminales (pegar aquí, formato: Agencia,Marca,Terminal,Disponible)
-            <textarea id="terminalesPaste" rows="6" placeholder="Pega aquí la lista de terminales..."></textarea>
-            </label>
-            <button id="btnCargarTerminales" class="btn btn-outline" style="margin-top:6px">Cargar terminales</button>
-        </div>
-        <div class="grid grid-4" style="margin-bottom:10px">
-            <input id="termAgencia" placeholder="Agencia" />
-            <input id="termMarca" placeholder="Marca" />
-            <input id="termTerminal" placeholder="Terminal" />
-            <input id="termDisponible" type="number" min="0" placeholder="Disponible" />
-        </div>
-        <div class="row gap" style="margin-bottom:16px">
-            <button id="btnAddTerminal" class="btn btn-outline">Guardar terminal</button>
-            <button id="btnDelTerminal" class="btn btn-outline danger">Eliminar terminal</button>
-        </div>
-        <div class="row gap" style="flex-wrap:wrap">
-            <div class="muted">Actualizado: <span id="invFechaTag">—</span></div>
-            <button id="btnInvRefrescar" class="btn btn-outline">Refrescar</button>
-            <input id="invBuscar" placeholder="Buscar modelo…" style="max-width:260px" />
-        </div>
-        <div class="subtle-title">Filtrar por marca</div>
-        <div class="row gap" style="flex-wrap:wrap">
-            <button class="btn btn-ghost active" data-brand="all">Todas</button>
-            <button class="btn btn-ghost" data-brand="Samsung">Samsung</button>
-            <button class="btn btn-ghost" data-brand="Apple">Apple</button>
-            <button class="btn btn-ghost" data-brand="Xiaomi">Xiaomi</button>
-            <button class="btn btn-ghost" data-brand="Huawei">Huawei</button>
-            <button class="btn btn-ghost" data-brand="Motorola">Motorola</button>
-            <button class="btn btn-ghost" data-brand="Honor">Honor</button>
-            <button class="btn btn-ghost" data-brand="Oppo">Oppo</button>
-        </div>
-        </section>
-        <section class="card paper">
-        <div class="grid full">
-            <table id="tablaInventario" style="width:100%; border-collapse:collapse">
-            <thead>
-                <tr>
-                <th style="text-align:left; padding:8px 6px;">Agencia</th>
-                <th style="text-align:left; padding:8px 6px;">Marca</th>
-                <th style="text-align:left; padding:8px 6px;">Terminal</th>
-                <th style="text-align:right; padding:8px 6px;">Disponible</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-            </table>
-        </div>
-        <small class="muted">La lista se edita manualmente o pegando la lista en la interfaz.</small>
-        </section>
+    <section class="card glass" data-guard="sims">
+    <h2 class="card-title">Agente destino</h2>
+    <div class="grid">
+        <label class="full">Seleccionar agente (libreta)
+        <select id="selAgente"></select>
+        </label>
+        <label>Agente
+        <input id="agente" placeholder="Nombre del agente" />
+        </label>
+        <label>Usuario
+        <input id="usuario" placeholder="Usuario/cliente (ej. rumadr)" />
+        </label>
+        <label class="full">Correo del agente
+        <input id="correo" placeholder="correo@empresa.com" />
+        </label>
+    </div>
+    <div class="subtle-title">Agregar / actualizar en libreta</div>
+    <div class="grid grid-3">
+        <input id="newNombre" placeholder="Nombre completo" />
+        <input id="newUsuario" placeholder="Usuario (ej. emondragon)" />
+        <input id="newCorreo"  placeholder="correo@ice.go.cr" />
+    </div>
+    <div class="row gap">
+        <button id="btnAddAgente" class="btn btn-outline">Guardar agente</button>
+        <button id="btnDelAgente" class="btn btn-outline btn-danger">Eliminar por correo</button>
+    </div>
     </section>
 
-    <!-- ============ TAB: OUTLOOK ============ -->
-    <section id="tab-outlook" class="tabpanel">
-        <section class="card glass">
-        <h2 class="card-title">Validación de Outlook de Escritorio</h2>
-        <div class="muted" style="margin-bottom:8px">Checklist visual para confirmar instalación y conexión.</div>
-        <div class="grid grid-3">
-            <div class="card paper"></div>
-            <div class="card paper"></div>
-            <div class="card paper"></div>
-        </div>
-        <div class="row gap" style="margin-top:10px">
-            <button id="btnProbarOutlook" class="btn btn-outline">Probar ahora</button>
-            <small class="muted">* Esta prueba no envía correos; solo valida la disponibilidad del cliente.</small>
-        </div>
-        </section>
+    <section class="card glass" data-guard="sims">
+    <h2 class="card-title">Detalle de SIMs</h2>
+    <div class="grid">
+        <label class="full">Contenido de la SIM (pegar aquí)
+        <textarea id="contenido" rows="10" placeholder="Pegue el texto completo de la SIM…"></textarea>
+        </label>
+    </div>
+    <div class="subtle-title">Firma del supervisor</div>
+    <div class="sign-box">
+        <img id="imgFirmaFija" src="./firmasupervisor.jpg" alt="Firma supervisor" style="max-width:300px;max-height:120px;">
+        <small class="muted">Firma del supervisor</small>
+    </div>
+    <div class="row gap actions">
+        <button id="btnGenerar" class="btn btn-neon big">Generar PDF y Enviar</button>
+    </div>
     </section>
 
-    <!-- ============ TAB: CRÉDITOS ============ -->
-    <section id="tab-credits" class="tabpanel">
-        <section class="card glass credits">
-        <div class="credits-glow"></div>
-        <h2 class="card-title">Créditos</h2>
-        <div class="credits-body">
-            <div class="credits-title">Ruben Madrigal Jimenez</div>
-            <div class="credits-sub">Full Stack Developer — Infinix DEVcom</div>
-            <p class="muted">
-            Aplicación de escritorio para formateo de SIMs, firma de supervisor, generación de PDF
-            y envío por correo corporativo con Microsoft Graph (OAuth2).
-            </p>
+    <section class="card paper" data-guard="sims">
+    <h2 class="card-title">Vista previa (PDF)</h2>
+    <div id="preview" class="preview">
+        <div class="preview-head">
+        <div><strong>Agente:</strong> <span id="pvAgente">—</span></div>
+        <div><strong>Usuario:</strong> <span id="pvUsuario">—</span></div>
+        <div><strong>Correo:</strong> <span id="pvCorreo">—</span></div>
+        <div><strong>Fecha:</strong> <span id="pvFecha">—</span></div>
         </div>
-        </section>
+        <hr>
+        <pre id="pvContenido"></pre>
+        <div class="preview-sign">
+        <img id="imgFirmaFijaPreview" src="./firmasupervisor.jpg" alt="firma del supervisor" style="max-width:300px;max-height:120px;" />
+        <div class="sign-line">______________________________</div>
+        <div class="sign-label">Firma del supervisor</div>
+        </div>
+    </div>
     </section>
-    </main>
+</section>
 
-    <script>
-    // Tabs
-    const tabs = document.querySelectorAll('.tab');
-    const panels = document.querySelectorAll('.tabpanel');
-    tabs.forEach(btn => {
-        btn.addEventListener('click', () => {
-        tabs.forEach(b => b.classList.remove('active'));
-        panels.forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        const target = document.querySelector(btn.dataset.target);
-        if (target) target.classList.add('active');
-        });
+<section id="tab-inventario" class="tabpanel">
+    <section class="card glass">
+    <h2 class="card-title">Inventario de Terminales</h2>
+    <div style="margin-bottom:10px">
+        <label class="full">Cargar terminales (pegar aquí, formato: Agencia,Marca,Terminal,Disponible)
+        <textarea id="terminalesPaste" rows="6" placeholder="Pega aquí la lista de terminales..."></textarea>
+        </label>
+        <button id="btnCargarTerminales" class="btn btn-outline" style="margin-top:6px">Cargar terminales</button>
+    </div>
+    <div class="row gap" style="flex-wrap:wrap">
+        <div class="muted">Actualizado: <span id="invFechaTag">—</span></div>
+        <button id="btnInvRefrescar" class="btn btn-outline">Refrescar</button>
+        <input id="invBuscar" placeholder="Buscar modelo…" style="max-width:260px" />
+    </div>
+    <div class="subtle-title">Filtrar por marca</div>
+    <div class="row gap" style="flex-wrap:wrap">
+        <button class="btn btn-ghost active" data-brand="all">Todas</button>
+        <button class="btn btn-ghost" data-brand="Samsung">Samsung</button>
+        <button class="btn btn-ghost" data-brand="Apple">Apple</button>
+        <button class="btn btn-ghost" data-brand="Xiaomi">Xiaomi</button>
+        <button class="btn btn-ghost" data-brand="Huawei">Huawei</button>
+        <button class="btn btn-ghost" data-brand="Motorola">Motorola</button>
+        <button class="btn btn-ghost" data-brand="Honor">Honor</button>
+        <button class="btn btn-ghost" data-brand="Oppo">Oppo</button>
+    </div>
+    </section>
+    <section class="card paper">
+    <div class="grid full">
+        <table id="tablaInventario" style="width:100%; border-collapse:collapse">
+        <thead>
+            <tr>
+            <th style="text-align:left; padding:8px 6px;">Agencia</th>
+            <th style="text-align:left; padding:8px 6px;">Marca</th>
+            <th style="text-align:left; padding:8px 6px;">Terminal</th>
+            <th style="text-align:right; padding:8px 6px;">Disponible</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+        </table>
+    </div>
+    <small class="muted">La lista se edita manualmente o pegando la lista en la interfaz.</small>
+    </section>
+</section>
+
+<section id="tab-outlook" class="tabpanel">
+    <section class="card glass">
+    <h2 class="card-title">Validación de Outlook de Escritorio</h2>
+    <div class="muted" style="margin-bottom:8px">Checklist visual para confirmar instalación y conexión.</div>
+    <div class="grid grid-3">
+        <div class="card paper"></div>
+        <div class="card paper"></div>
+        <div class="card paper"></div>
+    </div>
+    <div class="row gap" style="margin-top:10px">
+        <button id="btnProbarOutlook" class="btn btn-outline">Probar ahora</button>
+        <small class="muted">* Esta prueba no envía correos; solo valida la disponibilidad del cliente.</small>
+    </div>
+    </section>
+</section>
+
+<section id="tab-credits" class="tabpanel">
+    <section class="card glass credits">
+    <div class="credits-glow"></div>
+    <h2 class="card-title">Créditos</h2>
+    <div class="credits-body">
+        <div class="credits-title">Ruben Madrigal Jimenez</div>
+        <div class="credits-sub">Full Stack Developer — Infinix DEVcom</div>
+        <p class="muted">
+        Aplicación de escritorio para formateo de SIMs, firma de supervisor, generación de PDF
+        y envío por correo corporativo con Microsoft Graph (OAuth2).
+        </p>
+    </div>
+    </section>
+</section>
+</main>
+
+<script>
+// Tabs
+const tabs = document.querySelectorAll('.tab');
+const panels = document.querySelectorAll('.tabpanel');
+tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+    tabs.forEach(b => b.classList.remove('active'));
+    panels.forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    const target = document.querySelector(btn.dataset.target);
+    if (target) target.classList.add('active');
     });
+});
 
-    // Reloj/fecha
-    const neonClock = document.getElementById('neonClock');
-    const miniDate  = document.getElementById('miniDate');
-    function pad(n){ return String(n).padStart(2,'0'); }
-    function tick() {
-        const d = new Date();
-        neonClock.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-        if (!miniDate.value) miniDate.valueAsDate = d;
-    }
-    tick(); setInterval(tick, 1000);
+// Reloj/fecha
+const neonClock = document.getElementById('neonClock');
+const miniDate  = document.getElementById('miniDate');
+function pad(n){ return String(n).padStart(2,'0'); }
+function tick() {
+    const d = new Date();
+    neonClock.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    if (!miniDate.value) miniDate.valueAsDate = d;
+}
+tick(); setInterval(tick, 1000);
 
-    // Guard SIMs
-    function setSimsGuard(isLogged) {
-        document.querySelectorAll('[data-guard="sims"]').forEach(el => {
-        el.style.pointerEvents = isLogged ? 'auto' : 'none';
-        el.style.opacity = isLogged ? '1' : '0.45';
-        });
-        const note = document.getElementById('guardNote');
-        if (note) note.style.display = isLogged ? 'none' : 'block';
-    }
+// Guard SIMs
+function setSimsGuard(isLogged) {
+    document.querySelectorAll('[data-guard="sims"]').forEach(el => {
+    el.style.pointerEvents = isLogged ? 'auto' : 'none';
+    el.style.opacity = isLogged ? '1' : '0.45';
+    });
+    const note = document.getElementById('guardNote');
+    if (note) note.style.display = isLogged ? 'none' : 'block';
+}
+setSimsGuard(false);
+
+// Login/logout
+let supervisorAutenticado = false;
+document.getElementById('btnLogin').onclick = async function() {
+    const correo = document.getElementById('supCorreo').value.trim();
+    const clave  = document.getElementById('supClave').value.trim();
+    if (!correo || !clave) return alert('Ingrese el correo y la clave');
+    const result = await window.electronAPI.authSupervisor({ email: correo, password: clave });
+    if (result.ok) {
+    supervisorAutenticado = true;
+    setSimsGuard(true);
+    document.getElementById('supEstado').textContent = 'Autenticado como ' + correo;
+    habilitarTerminales(true);
+    } else {
+    supervisorAutenticado = false;
     setSimsGuard(false);
-
-    // Login/logout
-    let supervisorAutenticado = false;
-    document.getElementById('btnLogin').onclick = async function() {
-        const correo = document.getElementById('supCorreo').value.trim();
-        const clave  = document.getElementById('supClave').value.trim();
-        if (!correo || !clave) return alert('Ingrese el correo y la clave');
-        const result = await window.electronAPI.authSupervisor({ email: correo, password: clave });
-        if (result.ok) {
-        supervisorAutenticado = true;
-        setSimsGuard(true);
-        document.getElementById('supEstado').textContent = 'Autenticado como ' + correo;
-        habilitarTerminales(true);
-        } else {
-        supervisorAutenticado = false;
-        setSimsGuard(false);
-        habilitarTerminales(false);
-        alert('Correo o clave incorrectos');
-        }
-    };
-    document.getElementById('btnLogoff').onclick = function() {
-        supervisorAutenticado = false;
-        setSimsGuard(false);
-        habilitarTerminales(false);
-        document.getElementById('supEstado').textContent = 'No autenticado';
-        document.getElementById('supCorreo').value = '';
-        document.getElementById('supClave').value = '';
-    };
-
-    // Habilitar/deshabilitar controles de terminales
-    function habilitarTerminales(estado) {
-        ['btnCargarTerminales','btnAddTerminal','btnDelTerminal','terminalesPaste','termAgencia','termMarca','termTerminal','termDisponible']
-        .forEach(id => { const el = document.getElementById(id); if (el) el.disabled = !estado; });
+    habilitarTerminales(false);
+    alert('Correo o clave incorrectos');
     }
-    document.addEventListener('DOMContentLoaded', () => {
-        habilitarTerminales(false);
-        cargarAgentes();
+};
+document.getElementById('btnLogoff').onclick = function() {
+    supervisorAutenticado = false;
+    setSimsGuard(false);
+    habilitarTerminales(false);
+    document.getElementById('supEstado').textContent = 'No autenticado';
+    document.getElementById('supCorreo').value = '';
+    document.getElementById('supClave').value = '';
+};
+
+// Habilitar/deshabilitar controles de terminales
+function habilitarTerminales(estado) {
+    ['btnCargarTerminales','terminalesPaste']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.disabled = !estado; });
+}
+document.addEventListener('DOMContentLoaded', () => {
+    habilitarTerminales(false);
+    cargarAgentes();
+});
+
+// ===== AGENTES =====
+async function cargarAgentes() {
+    const agentes = await window.electronAPI.listAgents();
+    const sel = document.getElementById('selAgente');
+    sel.innerHTML = '<option value="">— Seleccione —</option>';
+    agentes.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a.correo;
+    opt.textContent = `${a.nombre || ''} (${a.correo})`;
+    sel.appendChild(opt);
     });
-
-    // ===== AGENTES =====
-    async function cargarAgentes() {
-        const agentes = await window.electronAPI.listAgents();
-        const sel = document.getElementById('selAgente');
-        sel.innerHTML = '<option value="">— Seleccione —</option>';
-        agentes.forEach(a => {
-        const opt = document.createElement('option');
-        opt.value = a.correo;
-        opt.textContent = `${a.nombre || ''} (${a.correo})`;
-        sel.appendChild(opt);
-        });
-    }
-    document.getElementById('selAgente').onchange = function() {
-        const correo = this.value;
-        window.electronAPI.listAgents().then(agentes => {
-        const ag = agentes.find(a => a.correo === correo);
-        document.getElementById('agente').value = ag?.nombre || '';
-        document.getElementById('usuario').value = ag?.usuario || '';
-        document.getElementById('correo').value  = ag?.correo || '';
-        });
-    };
-    document.getElementById('btnAddAgente').onclick = async function() {
-        const nombre = document.getElementById('newNombre').value.trim();
-        const usuario = document.getElementById('newUsuario').value.trim();
-        const correo  = document.getElementById('newCorreo').value.trim();
-        if (!nombre || !usuario || !correo) return alert('Completa todos los campos');
-        const result = await window.electronAPI.addAgent({ nombre, usuario, correo });
-        if (result.ok) {
-        await cargarAgentes();
-        alert('Agente guardado');
-        document.getElementById('newNombre').value = '';
-        document.getElementById('newUsuario').value = '';
-        document.getElementById('newCorreo').value  = '';
-        }
-    };
-    document.getElementById('btnDelAgente').onclick = async function() {
-        const correo = document.getElementById('newCorreo').value.trim();
-        if (!correo) return alert('Indica el correo para eliminar');
-        const result = await window.electronAPI.removeAgent(correo);
-        if (result.ok) { await cargarAgentes(); alert('Agente eliminado'); }
-    };
-
-    // ===== Firma en canvas + preview =====
-    const canvas = document.getElementById('canvasFirma');
-    const ctx = canvas.getContext('2d');
-    let drawing = false;
-    canvas.onmousedown = () => { drawing = true; ctx.beginPath(); };
-    canvas.onmouseup   = () => { drawing = false; actualizarPreviewSIM(); };
-    canvas.onmousemove = e => {
-        if (!drawing) return;
-        const r = canvas.getBoundingClientRect();
-        ctx.lineWidth = 2; ctx.strokeStyle = "#222";
-        ctx.lineTo(e.clientX - r.left, e.clientY - r.top); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(e.clientX - r.left, e.clientY - r.top);
-    };
-
-    function actualizarPreviewSIM() {
-        document.getElementById('pvAgente').textContent   = document.getElementById('agente').value;
-        document.getElementById('pvUsuario').textContent  = document.getElementById('usuario').value;
-        document.getElementById('pvCorreo').textContent   = document.getElementById('correo').value;
-        document.getElementById('pvFecha').textContent    = miniDate.value;
-        document.getElementById('pvContenido').textContent= document.getElementById('contenido').value;
-        document.getElementById('imgFirma').src           = canvas.toDataURL('image/png');
-    }
-    ['agente','usuario','correo','contenido'].forEach(id => {
-        const el = document.getElementById(id);
-        el.oninput = actualizarPreviewSIM;
+}
+document.getElementById('selAgente').onchange = function() {
+    const correo = this.value;
+    window.electronAPI.listAgents().then(agentes => {
+    const ag = agentes.find(a => a.correo === correo);
+    document.getElementById('agente').value = ag?.nombre || '';
+    document.getElementById('usuario').value = ag?.usuario || '';
+    document.getElementById('correo').value  = ag?.correo || '';
     });
-    miniDate.oninput = actualizarPreviewSIM;
+};
+document.getElementById('btnAddAgente').onclick = async function() {
+    const nombre = document.getElementById('newNombre').value.trim();
+    const usuario = document.getElementById('newUsuario').value.trim();
+    const correo  = document.getElementById('newCorreo').value.trim();
+    if (!nombre || !usuario || !correo) return alert('Completa todos los campos');
+    const result = await window.electronAPI.addAgent({ nombre, usuario, correo });
+    if (result.ok) {
+    await cargarAgentes();
+    alert('Agente guardado');
+    document.getElementById('newNombre').value = '';
+    document.getElementById('newUsuario').value = '';
+    document.getElementById('newCorreo').value  = '';
+    }
+};
+document.getElementById('btnDelAgente').onclick = async function() {
+    const correo = document.getElementById('newCorreo').value.trim();
+    if (!correo) return alert('Indica el correo para eliminar');
+    const result = await window.electronAPI.removeAgent(correo);
+    if (result.ok) { await cargarAgentes(); alert('Agente eliminado'); }
+};
 
-    // ===== Generar PDF y (futuro) enviar =====
-    document.getElementById('btnGenerar').onclick = async function() {
-        if (!supervisorAutenticado) return alert('Debe autenticarse como supervisor.');
-        actualizarPreviewSIM();
+// ===== Firma fija + preview =====
+function actualizarPreviewSIM() {
+    document.getElementById('pvAgente').textContent   = document.getElementById('agente').value;
+    document.getElementById('pvUsuario').textContent  = document.getElementById('usuario').value;
+    document.getElementById('pvCorreo').textContent   = document.getElementById('correo').value;
+    document.getElementById('pvFecha').textContent    = miniDate.value;
+    document.getElementById('pvContenido').textContent= document.getElementById('contenido').value;
+    // La firma ya es fija, no se actualiza por JS
+}
+['agente','usuario','correo','contenido'].forEach(id => {
+    const el = document.getElementById(id);
+    el.oninput = actualizarPreviewSIM;
+});
+miniDate.oninput = actualizarPreviewSIM;
 
-        const payload = {
-        agente:   document.getElementById('agente').value.trim(),
-        usuario:  document.getElementById('usuario').value.trim(),
-        correo:   document.getElementById('correo').value.trim(),
-        fecha:    document.getElementById('miniDate').value,
-        contenido:document.getElementById('contenido').value,
-        firmaDataURL: canvas.toDataURL('image/png')
-        };
+// ===== Generar PDF y (futuro) enviar =====
+document.getElementById('btnGenerar').onclick = async function() {
+    if (!supervisorAutenticado) return alert('Debe autenticarse como supervisor.');
+    actualizarPreviewSIM();
 
-        const res = await window.electronAPI.generateAndSendSIM(payload);
-        if (res?.ok) alert(`PDF generado en:\n${res.path}${res.sent ? '\nCorreo enviado.' : ''}`);
-        else alert(`Error al generar/enviar: ${res?.error || 'desconocido'}`);
+    const payload = {
+    agente:   document.getElementById('agente').value.trim(),
+    usuario:  document.getElementById('usuario').value.trim(),
+    correo:   document.getElementById('correo').value.trim(),
+    fecha:    document.getElementById('miniDate').value,
+    contenido:document.getElementById('contenido').value,
+    firmaPath: "./firmasupervisor.jpg" // Usar la imagen fija
     };
 
-    // ===== Inventario (carga/render básicos) =====
-    let terminalesData = [];
-    async function cargarTerminales() {
-        const result = await window.electronAPI.listTerminales();
-        terminalesData = Array.isArray(result) ? result : [];
-        renderInventarioTerminales();
-        actualizarFechaInventario();
-    }
+    const res = await window.electronAPI.generateAndSendSIM(payload);
+    if (res?.ok) alert(`PDF generado en:\n${res.path}${res.sent ? '\nCorreo enviado.' : ''}`);
+    else alert(`Error al generar/enviar: ${res?.error || 'desconocido'}`);
+};
 
-    function renderInventarioTerminales(filterBrand = 'all', search = '') {
-        const tbody = document.querySelector('#tablaInventario tbody');
-        tbody.innerHTML = '';
-        const terminos = terminalesData.filter(t => {
-        const brandOk = filterBrand === 'all' || t.marca === filterBrand;
+// ===== Inventario (carga/render básicos) =====
+let terminalesData = [];
+async function cargarTerminales() {
+    const result = await window.electronAPI.listTerminales();
+    terminalesData = Array.isArray(result) ? result : [];
+    renderInventarioTerminales();
+    actualizarFechaInventario();
+}
+
+function renderInventarioTerminales(filterBrand = 'all', search = '') {
+    const tbody = document.querySelector('#tablaInventario tbody');
+    tbody.innerHTML = '';
+    const terminos = terminalesData.filter(t => {
+        const brandOk = filterBrand === 'all' || (t.marca && t.marca.toLowerCase() === filterBrand.toLowerCase());
         const textOk  = !search || (t.terminal || '').toLowerCase().includes(search.toLowerCase());
         return brandOk && textOk;
-        });
-        for (const t of terminos) {
+    });
+    for (const t of terminos) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td style="padding:6px;">${t.agencia || ''}</td>
@@ -396,65 +362,44 @@
             <td style="padding:6px;">${t.terminal || ''}</td>
             <td style="padding:6px; text-align:right;">${Number(t.disponible)||0}</td>`;
         tbody.appendChild(tr);
-        }
     }
-    function actualizarFechaInventario() {
-        const el = document.getElementById('invFechaTag');
-        if (el) el.textContent = new Date().toLocaleString();
-    }
+}
+function actualizarFechaInventario() {
+    const el = document.getElementById('invFechaTag');
+    if (el) el.textContent = new Date().toLocaleString();
+}
 
-    document.getElementById('btnCargarTerminales').onclick = async () => {
-        const txt = document.getElementById('terminalesPaste').value.trim();
-        if (!txt) return;
-        const rows = txt.split(/\r?\n/).map(l => l.split(',').map(s => s.trim()));
-        const bulk = rows
+// Parser para terminales con tabulaciones
+document.getElementById('btnCargarTerminales').onclick = async () => {
+    const txt = document.getElementById('terminalesPaste').value.trim();
+    if (!txt) return;
+    // Separador por tabulación
+    const rows = txt.split(/\r?\n/).map(line => line.split('\t').map(v => v.trim()));
+    const bulk = rows
         .filter(r => r.length >= 4)
         .map(([agencia, marca, terminal, disponible]) => ({
             agencia, marca, terminal, disponible: Number(disponible) || 0
         }));
-        const res = await window.electronAPI.bulkAddTerminales(bulk);
-        if (res?.ok) { await cargarTerminales(); alert(`Cargados ${res.count} registros`); }
-    };
+    const res = await window.electronAPI.bulkAddTerminales(bulk);
+    if (res?.ok) { await cargarTerminales(); alert(`Cargados ${res.count} registros`); }
+};
 
-    document.getElementById('btnAddTerminal').onclick = async () => {
-        const t = {
-        agencia: document.getElementById('termAgencia').value.trim(),
-        marca: document.getElementById('termMarca').value.trim(),
-        terminal: document.getElementById('termTerminal').value.trim(),
-        disponible: Number(document.getElementById('termDisponible').value) || 0
-        };
-        if (!t.agencia || !t.marca || !t.terminal) return alert('Complete agencia, marca y terminal');
-        const res = await window.electronAPI.addTerminal(t);
-        if (res?.ok) { await cargarTerminales(); alert('Guardado'); }
-    };
-
-    document.getElementById('btnDelTerminal').onclick = async () => {
-        const t = {
-        agencia: document.getElementById('termAgencia').value.trim(),
-        marca: document.getElementById('termMarca').value.trim(),
-        terminal: document.getElementById('termTerminal').value.trim()
-        };
-        if (!t.agencia || !t.marca || !t.terminal) return alert('Complete agencia, marca y terminal');
-        const res = await window.electronAPI.removeTerminal(t);
-        if (res?.ok) { await cargarTerminales(); alert('Eliminado'); }
-    };
-
-    document.getElementById('btnInvRefrescar').onclick = cargarTerminales;
-    document.getElementById('invBuscar').oninput = (e) => {
-        const brandBtn = document.querySelector('.btn.btn-ghost.active');
-        const brand = brandBtn?.dataset?.brand || 'all';
-        renderInventarioTerminales(brand, e.target.value || '');
-    };
-    document.querySelectorAll('[data-brand]').forEach(btn => {
-        btn.onclick = () => {
+document.getElementById('btnInvRefrescar').onclick = cargarTerminales;
+document.getElementById('invBuscar').oninput = (e) => {
+    const brandBtn = document.querySelector('.btn.btn-ghost.active');
+    const brand = brandBtn?.dataset?.brand || 'all';
+    renderInventarioTerminales(brand, e.target.value || '');
+};
+document.querySelectorAll('[data-brand]').forEach(btn => {
+    btn.onclick = () => {
         document.querySelectorAll('[data-brand]').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         renderInventarioTerminales(btn.dataset.brand, document.getElementById('invBuscar').value || '');
-        };
-    });
+    };
+});
 
-    // Primera carga de inventario
-    cargarTerminales();
-    </script>
-    </body>
-    </html>
+// Primera carga de inventario
+cargarTerminales();
+</script>
+</body>
+</html>

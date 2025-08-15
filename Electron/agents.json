@@ -1,34 +1,86 @@
 {
-    "defaultAgent": {
-        "nombre": "Ruben Madrigal Jimenez",
-        "usuario": "rumadr",
-        "correo": "rmadigalj@ice.go.cr"
+  "defaultAgent": null,
+  "agents": [
+    {
+      "nombre": "Flora Romero Hernandez",
+      "usuario": "fromero",
+      "correo": "fromero@ice.go.cr"
     },
-    "agents": [
-        { "nombre": "Flora Romero Hernandez", "usuario": "fromero", "correo": "fromero@ice.go.cr" },
-        { "nombre": "Jason Daniel Lopez Guzman", "usuario": "jlopezgu", "correo": "jlopezgu@ice.go.cr" },
-        { "nombre": "Gustavo Enrique Lanzonis Campos", "usuario": "glanzoni", "correo": "glanzonis@ice.go.cr" },
-        { "nombre": "Claudia Andrea Contreras Palomo", "usuario": "ccontreras", "correo": "ccontreras@ice.go.cr" },
-        { "nombre": "Angie Mariela Cardona Rodriguez", "usuario": "acardona", "correo": "acardona@ice.go.cr" },
-        { "nombre": "Gloriana Brenes Duran", "usuario": "gbrenes", "correo": "gbrenes@ice.go.cr" },
-        { "nombre": "Paola Barboza Palma", "usuario": "pbarboza", "correo": "pbarboza@ice.go.cr" },
-        { "nombre": "Cristian Rivera Salazar", "usuario": "crivera", "correo": "criveras@ice.go.cr" },
-        { "nombre": "Enyeril Medina Jarquin", "usuario": "emedina", "correo": "emedina@ice.go.cr" },
-        { "nombre": "Raisha Manzanares Maradiaga", "usuario": "rmanzanares", "correo": "rmanzanares@ice.go.cr" },
-        { "nombre": "Maria Jose Sanabria Lopez", "usuario": "msanabria", "correo": "msanabria@ice.go.cr" },
-        { "nombre": "Ruben Madrigal Jimenez", "usuario": "rmadrigal", "correo": "rmadrigalj@ice.go.cr" },
-        { "nombre": "Stephanie Fallas Arias", "usuario": "sfallas", "correo": "sfallas@ice.go.cr" }
-    ],
-    "oauth": {
-        "clientId": "AQUI_CLIENT_ID_DE_AZURE",
-        "authority": "https://login.microsoftonline.com/common",
-        "scopes": ["User.Read", "Mail.Send", "offline_access"]
+    {
+      "nombre": "Jason Daniel Lopez Guzman",
+      "usuario": "jlopezgu",
+      "correo": "jlopezgu@ice.go.cr"
     },
-    "ui": {
-        "titulo": "SIMs Infinix",
-        "logo": ""
+    {
+      "nombre": "Gustavo Enrique Lanzonis Campos",
+      "usuario": "glanzoni",
+      "correo": "glanzonis@ice.go.cr"
     },
-    "version": "1.0.0",
-    "lastUpdated": "2023-10-01T12:00:00Z",
-    "description": "Configuration for the SIMs Infinix Electron application."
+    {
+      "nombre": "Claudia Andrea Contreras Palomo",
+      "usuario": "ccontreras",
+      "correo": "ccontreras@ice.go.cr"
+    },
+    {
+      "nombre": "Angie Mariela Cardona Rodriguez",
+      "usuario": "acardona",
+      "correo": "acardona@ice.go.cr"
+    },
+    {
+      "nombre": "Gloriana Brenes Duran",
+      "usuario": "gbrenes",
+      "correo": "gbrenes@ice.go.cr"
+    },
+    {
+      "nombre": "Paola Barboza Palma",
+      "usuario": "pbarboza",
+      "correo": "pbarboza@ice.go.cr"
+    },
+    {
+      "nombre": "Cristian Rivera Salazar",
+      "usuario": "crivera",
+      "correo": "criveras@ice.go.cr"
+    },
+    {
+      "nombre": "Enyeril Medina Jarquin",
+      "usuario": "emedina",
+      "correo": "emedina@ice.go.cr"
+    },
+    {
+      "nombre": "Raisha Manzanares Maradiaga",
+      "usuario": "rmanzanares",
+      "correo": "rmanzanares@ice.go.cr"
+    },
+    {
+      "nombre": "Maria Jose Sanabria Lopez",
+      "usuario": "msanabria",
+      "correo": "msanabria@ice.go.cr"
+    },
+    {
+      "nombre": "Ruben Madrigal Jimenez",
+      "usuario": "rmadrigal",
+      "correo": "rmadrigalj@ice.go.cr"
+    },
+    {
+      "nombre": "Stephanie Fallas Arias",
+      "usuario": "sfallas",
+      "correo": "sfallas@ice.go.cr"
+    }
+  ],
+  "oauth": {
+    "clientId": "AQUI_CLIENT_ID_DE_AZURE",
+    "authority": "https://login.microsoftonline.com/common",
+    "scopes": [
+      "User.Read",
+      "Mail.Send",
+      "offline_access"
+    ]
+  },
+  "ui": {
+    "titulo": "SIMs Infinix",
+    "logo": ""
+  },
+  "version": "1.0.0",
+  "lastUpdated": "2023-10-01T12:00:00Z",
+  "description": "Configuration for the SIMs Infinix Electron application."
 }
