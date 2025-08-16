@@ -1,18 +1,34 @@
     {
-    "name": "extractorsim",
-    "version": "1.0.0",
-    "description": "SIMs Infinix — app Electron para generar SIMs, firmar y gestionar inventario.",
-    "main": "Electron/main.js",
-    "author": "Ruben Madrigal Jimenez",
-    "license": "MIT",
-    "scripts": {
-        "start": "electron .",
-        "dev": "electron .",
-        "postinstall": "electron-builder install-app-deps"
-    },
-    "dependencies": {},
-    "devDependencies": {
-        "electron": "^30.0.0",
-        "electron-builder": "^24.13.3"
-    }
+        "name": "extractorsim",
+        "version": "1.0.0",
+        "description": "SIMs Infinix — app Electron para generar SIMs, firmar y gestionar inventario.",
+        "main": "Electron/main.js",
+        "author": "Ruben Madrigal Jimenez",
+        "license": "MIT",
+        "scripts": {
+            "start": "electron .",
+            "dev": "electron .",
+            "postinstall": "electron-builder install-app-deps"
+        },
+        "dependencies": {},
+        "devDependencies": {
+            "electron": "^30.0.0",
+            "electron-builder": "^24.13.3"
+        },
+        "build": {
+            "appId": "com.infinix.extractorsim",
+            "productName": "Extractorsim",
+            "directories": {
+                "buildResources": "Electron"
+            },
+            "files": [
+                "Electron/**/*",
+                "renderer/**/*",
+                "package.json"
+            ],
+            "win": {
+                "target": "nsis",
+                "sign": false
+            }
+        }
     }

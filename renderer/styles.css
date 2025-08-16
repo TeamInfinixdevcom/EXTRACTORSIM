@@ -41,6 +41,54 @@ body {
     box-shadow: 0 0 14px var(--accent), 0 0 28px rgba(118,231,255,.5);
 }
 
+/* Header Kolbi compacto y alineado en una fila */
+.kolbi-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1100px;
+    margin: 8px auto 0 auto;
+    padding: 8px 18px;
+    background: #43b02a;
+    border-radius: 18px;
+    box-shadow: 0 0 24px #43b02a55;
+}
+.kolbi-header-row img {
+    height: 32px;
+    margin-right: 8px;
+}
+.kolbi-title {
+    font-size: 1.15rem;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 2px;
+}
+.kolbi-eslogan {
+    font-size: 0.95em;
+    color: #0c59cc;
+    font-weight: bold;
+}
+.kolbi-header-row nav.tabs {
+    display: flex;
+    gap: 8px;
+}
+.kolbi-header-row .row {
+    gap: 8px;
+    align-items: center;
+}
+#neonClock {
+    color: #0c59cc;
+    text-shadow:
+        0 0 8px #0c59cc,
+        0 0 16px #0c59cc,
+        0 0 32px #fff;
+    font-weight: bold;
+    font-size: 1.1em;
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 4px 12px;
+}
+
 /* Tabs */
 .tabs { display: flex; gap: 8px; }
 .tab {
@@ -156,15 +204,5 @@ canvas { width: 100%; max-width: 700px; height: auto; background: #fff; border-r
     body { background: #fff; color: #111; }
     .topbar, .tabs, .card.glass { display: none !important; }
     .card.paper { background: #fff; border: 1px solid #e5e7eb; }
-    input, textarea, select { border: 0 !important; }
-}
-
-#neonClock {
-    color: #cc0c0c;
-    text-shadow:
-        0 0 8px #0c59cc,
-        0 0 16px #0c59cc,
-        0 0 32px #fff;
-    font-weight: bold;
-    font-size: 1.3em;
-}
+        input, textarea, select { border: 0 !important; }
+    }

@@ -1,8 +1,104 @@
 [
   {
     "agencia": "AGENCIA CALLE TERCERA (AV. 2DA.)",
-    "marca": "XIAOMI",
-    "terminal": "XIAOMI REDMI 14C 256GB NEGRO OCASO",
+    "marca": "APPLE",
+    "terminal": "IPHONE 15 ROSADO 128GB",
+    "disponible": 10
+  },
+  {
+    "agencia": "AGENCIA CALLE TERCERA (AV. 2DA.)",
+    "marca": "APPLE",
+    "terminal": "IPHONE 16 128GB BLANCO",
+    "disponible": 10
+  },
+  {
+    "agencia": "AGENCIA CALLE TERCERA (AV. 2DA.)",
+    "marca": "APPLE",
+    "terminal": "IPHONE 16 128GB NEGRO",
+    "disponible": 12
+  },
+  {
+    "agencia": "AGENCIA CALLE TERCERA (AV. 2DA.)",
+    "marca": "APPLE",
+    "terminal": "IPHONE 16 128GB ROSA",
+    "disponible": 3
+  },
+  {
+    "agencia": "AGENCIA CALLE TERCERA (AV. 2DA.)",
+    "marca": "APPLE",
+    "terminal": "IPHONE 16 128GB ULTRAMARINO",
+    "disponible": 9
+  },
+  {
+    "agencia": "AGENCIA CALLE TERCERA (AV. 2DA.)",
+    "marca": "APPLE",
+    "terminal": "IPHONE 16 256GB BLANCO",
+    "disponible": 5
+  },
+  {
+    "agencia": "AGENCIA CALLE TERCERA (AV. 2DA.)",
+    "marca": "APPLE",
+    "terminal": "IPHONE 16 256GB NEGRO",
+    "disponible": 2
+  },
+  {
+    "agencia": "AGENCIA CALLE TERCERA (AV. 2DA.)",
+    "marca": "APPLE",
+    "terminal": "IPHONE 16 256GB ULTRAMARINO",
+    "disponible": 1
+  },
+  {
+    "agencia": "AGENCIA CALLE TERCERA (AV. 2DA.)",
+    "marca": "APPLE",
+    "terminal": "IPHONE 16 256GB VERDE AZULADO",
+    "disponible": 1
+  },
+  {
+    "agencia": "AGENCIA CALLE TERCERA (AV. 2DA.)",
+    "marca": "APPLE",
+    "terminal": "IPHONE 16 PLUS 128GB ULTRAMARINO",
+    "disponible": 6
+  },
+  {
+    "agencia": "AGENCIA CALLE TERCERA (AV. 2DA.)",
+    "marca": "APPLE",
+    "terminal": "IPHONE 16 PLUS 256GB ULTRAMARINO",
+    "disponible": 1
+  },
+  {
+    "agencia": "AGENCIA CALLE TERCERA (AV. 2DA.)",
+    "marca": "APPLE",
+    "terminal": "IPHONE 16 PRO 128GB TITANIO NATURAL",
+    "disponible": 3
+  },
+  {
+    "agencia": "AGENCIA CALLE TERCERA (AV. 2DA.)",
+    "marca": "APPLE",
+    "terminal": "IPHONE 16 PRO 128GB TITANIO NEGRO",
+    "disponible": 6
+  },
+  {
+    "agencia": "AGENCIA CALLE TERCERA (AV. 2DA.)",
+    "marca": "APPLE",
+    "terminal": "IPHONE 16 PRO MAX 256GB TITANIO BLANCO",
+    "disponible": 16
+  },
+  {
+    "agencia": "AGENCIA CALLE TERCERA (AV. 2DA.)",
+    "marca": "APPLE",
+    "terminal": "IPHONE 16 PRO MAX 256GB TITANIO NEGRO",
+    "disponible": 14
+  },
+  {
+    "agencia": "AGENCIA CALLE TERCERA (AV. 2DA.)",
+    "marca": "APPLE",
+    "terminal": "IPHONE 16E 128GB BLANCO",
+    "disponible": 3
+  },
+  {
+    "agencia": "AGENCIA CALLE TERCERA (AV. 2DA.)",
+    "marca": "APPLE",
+    "terminal": "IPHONE 16E 128GB NEGRO",
     "disponible": 1
   }
 ]

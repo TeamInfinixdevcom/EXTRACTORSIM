@@ -8,31 +8,38 @@
 <link rel="stylesheet" href="../renderer/styles.css">
 <link rel="stylesheet" href="../renderer/neon.css">
 <link rel="icon" href="./kolbi.png" type="image/png">
-
+</head>
+<body>
 <main class="shell">
-<header class="topbar" style="background:#43b02a;">
-    <div class="brand">
-        <img src="./kolbi.png" alt="Kolbi" style="height:48px;vertical-align:middle;margin-right:12px;">
-        <span class="brand-name" style="font-size:2rem;">Entrega de SIMs Físicas Kolbi</span>
-    </div>
-    <nav class="tabs">
+    <header class="topbar" style="background:#43b02a; padding:0;">
+    <div class="kolbi-header-row">
+        <div style="display:flex;align-items:center;gap:12px;">
+        <img src="./kolbi.png" alt="Kolbi" style="height:32px;margin-right:8px;">
+        <div style="display:flex;flex-direction:column;align-items:flex-start;min-width:180px;">
+            <span class="kolbi-title">Entrega de SIMs Físicas Kolbi</span>
+            <span class="kolbi-eslogan">#somos de los mismos</span>
+        </div>
+        </div>
+        <nav class="tabs">
         <button class="tab active" data-target="#tab-form"><span class="tab-dot"></span> Formulario</button>
         <button class="tab" data-target="#tab-inventario"><span class="tab-dot"></span> Inventario</button>
-        <button class="tab" data-target="#tab-outlook"><span class="tab-dot"></span> Estado Outlook</button>
+        <button class="tab" data-target="#tab-notas"><span class="tab-dot"></span> Notas</button>
+        <button class="tab" data-target="#tab-entregas"><span class="tab-dot"></span> Entregas</button>
         <button class="tab" data-target="#tab-credits"><span class="tab-dot"></span> Créditos</button>
-    </nav>
-    <div class="row" style="gap:8px">
+        </nav>
+        <div class="row">
         <div id="neonClock" class="muted" aria-live="polite">--:--</div>
         <input id="miniDate" type="date" />
+        </div>
     </div>
-</header>
+    </header>
 
 <section id="tab-form" class="tabpanel active">
     <section class="card glass">
     <h2 class="card-title">Supervisor</h2>
     <div class="grid grid-3">
         <label class="full">Supervisor activo
-        <div class="row" style="gap:8px;">
+        <div class="row">
             <input id="supCorreo" placeholder="correo@ice.go.cr" />
             <input id="supClave" type="password" placeholder="Clave" />
             <button id="btnLogin" type="button" class="btn btn-neon">Iniciar sesión</button>
@@ -155,19 +162,24 @@
     </section>
 </section>
 
-<section id="tab-outlook" class="tabpanel">
+<section id="tab-notas" class="tabpanel">
     <section class="card glass">
-    <h2 class="card-title">Validación de Outlook de Escritorio</h2>
-    <div class="muted" style="margin-bottom:8px">Checklist visual para confirmar instalación y conexión.</div>
-    <div class="grid grid-3">
-        <div class="card paper"></div>
-        <div class="card paper"></div>
-        <div class="card paper"></div>
-    </div>
-    <div class="row gap" style="margin-top:10px">
-        <button id="btnProbarOutlook" class="btn btn-outline">Probar ahora</button>
-        <small class="muted">* Esta prueba no envía correos; solo valida la disponibilidad del cliente.</small>
-    </div>
+        <h2 class="card-title">Notas del supervisor</h2>
+        <div id="notasList"></div>
+        <textarea id="notaNueva" rows="3" placeholder="Escribe una nota..."></textarea>
+        <button id="btnAgregarNota" class="btn btn-outline">Agregar nota</button>
+    </section>
+</section>
+
+<section id="tab-entregas" class="tabpanel">
+    <section class="card glass">
+        <h2 class="card-title">Historial de entregas</h2>
+        <div id="graficoEntregas"></div>
+        <div id="entregasList"></div>
+        <label>Filtrar por correo:
+            <input id="filtroCorreo" placeholder="Correo del agente" />
+        </label>
+        <button id="btnHistorialPdf" class="btn btn-outline">Generar PDF de historial</button>
     </section>
 </section>
 
@@ -259,6 +271,8 @@ function habilitarTerminales(estado) {
 document.addEventListener('DOMContentLoaded', () => {
     habilitarTerminales(false);
     cargarAgentes();
+    cargarNotas();
+    cargarEntregas();
 });
 
 // ===== AGENTES =====
@@ -310,7 +324,6 @@ function actualizarPreviewSIM() {
     document.getElementById('pvCorreo').textContent   = document.getElementById('correo').value;
     document.getElementById('pvFecha').textContent    = miniDate.value;
     document.getElementById('pvContenido').textContent= document.getElementById('contenido').value;
-    // La firma ya es fija, no se actualiza por JS
 }
 ['agente','usuario','correo','contenido'].forEach(id => {
     const el = document.getElementById(id);
@@ -329,7 +342,7 @@ document.getElementById('btnGenerar').onclick = async function() {
     correo:   document.getElementById('correo').value.trim(),
     fecha:    document.getElementById('miniDate').value,
     contenido:document.getElementById('contenido').value,
-    firmaPath: "./firmasupervisor.jpg" // Usar la imagen fija
+    firmaPath: "./firmasupervisor.jpg"
     };
 
     const res = await window.electronAPI.generateAndSendSIM(payload);
@@ -369,11 +382,9 @@ function actualizarFechaInventario() {
     if (el) el.textContent = new Date().toLocaleString();
 }
 
-// Parser para terminales con tabulaciones
 document.getElementById('btnCargarTerminales').onclick = async () => {
     const txt = document.getElementById('terminalesPaste').value.trim();
     if (!txt) return;
-    // Separador por tabulación
     const rows = txt.split(/\r?\n/).map(line => line.split('\t').map(v => v.trim()));
     const bulk = rows
         .filter(r => r.length >= 4)
@@ -397,9 +408,102 @@ document.querySelectorAll('[data-brand]').forEach(btn => {
         renderInventarioTerminales(btn.dataset.brand, document.getElementById('invBuscar').value || '');
     };
 });
-
-// Primera carga de inventario
 cargarTerminales();
+
+// ===== Notas del supervisor =====
+async function cargarNotas() {
+    const notasList = document.getElementById('notasList');
+    const notas = await window.electronAPI.listNotas();
+    notasList.innerHTML = '';
+    notas.forEach(nota => {
+        const div = document.createElement('div');
+        div.className = 'nota-item';
+        div.innerHTML = `
+            <div>
+                <b>${nota.autor}</b> <span class="muted">${nota.fecha} ${nota.hora}</span>
+            </div>
+            <div>${nota.texto}</div>
+            <button class="btn btn-outline" onclick="editarNota('${nota.id}')">Editar</button>
+            <button class="btn btn-danger" onclick="borrarNota('${nota.id}')">Borrar</button>
+            <hr>
+        `;
+        notasList.appendChild(div);
+    });
+}
+document.getElementById('btnAgregarNota').onclick = async function() {
+    const texto = document.getElementById('notaNueva').value.trim();
+    if (!texto) return alert('Escribe una nota');
+    const fecha = new Date().toISOString().slice(0,10);
+    const hora = new Date().toLocaleTimeString('es-CR', { hour: '2-digit', minute: '2-digit' });
+    const autor = document.getElementById('supCorreo').value || 'Supervisor';
+    await window.electronAPI.addNota({ texto, fecha, hora, autor });
+    document.getElementById('notaNueva').value = '';
+    cargarNotas();
+};
+window.editarNota = async function(id) {
+    const notas = await window.electronAPI.listNotas();
+    const nota = notas.find(n => n.id === id);
+    if (!nota) return;
+    const nuevoTexto = prompt('Editar nota:', nota.texto);
+    if (nuevoTexto !== null) {
+        await window.electronAPI.editNota({ ...nota, texto: nuevoTexto });
+        cargarNotas();
+    }
+};
+window.borrarNota = async function(id) {
+    if (confirm('¿Eliminar esta nota?')) {
+        await window.electronAPI.removeNota(id);
+        cargarNotas();
+    }
+};
+
+// ===== Historial de entregas y gráfico =====
+async function cargarEntregas() {
+    const entregasList = document.getElementById('entregasList');
+    const graficoDiv = document.getElementById('graficoEntregas');
+    const filtroCorreo = document.getElementById('filtroCorreo').value.trim();
+    const entregas = await window.electronAPI.listHistorial(filtroCorreo || null);
+
+    // Listado
+    entregasList.innerHTML = '';
+    entregas.forEach(e => {
+        const div = document.createElement('div');
+        div.className = 'entrega-item';
+        div.innerHTML = `
+            <div><b>${e.agente}</b> <span class="muted">${e.fecha} ${e.hora}</span></div>
+            <div><b>Usuario:</b> ${e.usuario} <b>Correo:</b> ${e.correo}</div>
+            <pre>${e.contenido}</pre>
+            <a href="${e.pdf}" target="_blank">Abrir PDF</a>
+            <hr>
+        `;
+        entregasList.appendChild(div);
+    });
+
+    // Gráfico simple: entregas por agente
+    const conteo = {};
+    entregas.forEach(e => {
+        conteo[e.agente] = (conteo[e.agente] || 0) + 1;
+    });
+    graficoDiv.innerHTML = '<h4>Entregas por agente</h4>';
+    Object.entries(conteo).forEach(([agente, total]) => {
+        const bar = document.createElement('div');
+        bar.style.background = '#0c59cc';
+        bar.style.color = '#fff';
+        bar.style.margin = '4px 0';
+        bar.style.padding = '4px 8px';
+        bar.style.width = `${40 + total * 40}px`;
+        bar.textContent = `${agente}: ${total}`;
+        graficoDiv.appendChild(bar);
+    });
+}
+document.getElementById('filtroCorreo').oninput = cargarEntregas;
+document.getElementById('btnHistorialPdf').onclick = async function() {
+    const correo = document.getElementById('filtroCorreo').value.trim();
+    if (!correo) return alert('Indica el correo para el PDF');
+    const res = await window.electronAPI.historialPdf(correo);
+    if (res?.ok) alert(`PDF generado en:\n${res.path}`);
+    else alert(`Error al generar PDF: ${res?.error || 'desconocido'}`);
+};
 </script>
 </body>
 </html>
