@@ -277,3 +277,44 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTabla();
     });
     })();
+// Función para generar PDF
+async function generarPDF() {
+    try {
+        // Obtener datos para el nombre del archivo
+        const usuario = document.getElementById('usuario')?.value || 'usuario';
+        const fecha = new Date().toISOString().slice(0,10);
+        const fileName = `SIM-Kolbi-${usuario}-${fecha}.pdf`;
+        
+        // Mostrar diálogo para seleccionar dónde guardar
+        const savePath = await window.api.saveDialog(fileName);
+        if (!savePath) {
+            console.log('Guardado cancelado por el usuario');
+            return;
+        }
+        
+        // Generar el PDF usando la ventana actual
+        const result = await window.api.generatePdf({
+            savePath,
+            useCurrentWindow: true,
+            fileName
+        });
+        
+        // Mostrar resultado
+        if (result.ok) {
+            alert(`PDF guardado correctamente en:\n${result.path}`);
+        } else {
+            alert(`Error al generar PDF: ${result.error}`);
+        }
+    } catch (error) {
+        console.error('Error generando PDF:', error);
+        alert(`Error: ${error.message || 'Error desconocido'}`);
+    }
+}
+
+// Conectar el botón cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+    const btnGenerarPdf = document.getElementById('btnGenerarPdf');
+    if (btnGenerarPdf) {
+        btnGenerarPdf.addEventListener('click', generarPDF);
+    }
+});

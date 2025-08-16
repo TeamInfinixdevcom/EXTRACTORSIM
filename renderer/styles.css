@@ -206,3 +206,36 @@ canvas { width: 100%; max-width: 700px; height: auto; background: #fff; border-r
     .card.paper { background: #fff; border: 1px solid #e5e7eb; }
         input, textarea, select { border: 0 !important; }
     }
+
+    /* Estilos neon para la aplicación */
+body {
+    background: #0a0a0a;
+    font-family: 'Arial', sans-serif;
+    color: #00ff88;
+}
+
+.neon-text {
+    color: #00ff88;
+    text-shadow: 0 0 5px #00ff88, 0 0 10px #00ff88, 0 0 15px #00ff88;
+}
+
+.neon-button {
+    background: transparent;
+    border: 2px solid #00ff88;
+    color: #00ff88;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.neon-button:hover {
+    background: #00ff88;
+    color: #0a0a0a;
+    box-shadow: 0 0 20px #00ff88;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
